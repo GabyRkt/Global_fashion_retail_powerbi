@@ -1,0 +1,13 @@
+version: 2
+
+sources:
+  - name: raw_data
+    database: portfolio-retail-fashion
+    schema: raw_data
+    tables:
+      - name: customers
+      - name: discounts
+      - name: employees
+      - name: products
+      - name: stores
+      - name: transactions
