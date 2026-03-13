@@ -1,0 +1,51 @@
+with transactions as (
+    select * from {{ ref('stg_transactions') }}
+),
+
+discounts as (
+    select * from {{ ref('stg_discounts') }}
+),
+
+final as (
+    select
+        -- Clés
+        t.invoice_id,
+        t.line,
+        t.customer_id,
+        t.product_id,
+        t.store_id,
+        t.employee_id,
+
+        -- Dates
+        t.transaction_date,
+        extract(year from t.transaction_date)    as year,
+        extract(month from t.transaction_date)   as month,
+        extract(dayofweek from t.transaction_date) as day_of_week,
+
+        -- Métriques
+        t.quantity,
+        t.unit_price,
+        t.discount,
+        t.line_total,
+        t.invoice_total,
+        t.currency,
+        t.payment_method,
+        t.transaction_type,
+
+        -- Marge brute
+        round(t.line_total - (p.production_cost * t.quantity), 2) as gross_margin,
+
+        -- Taux de marge
+        round(
+            safe_divide(
+                t.line_total - (p.production_cost * t.quantity),
+                t.line_total
+            ) * 100, 2
+        )                                        as margin_rate
+
+    from transactions t
+    left join {{ ref('dim_products') }} p
+        on t.product_id = p.product_id
+)
+
+select * from final
