@@ -4,3 +4,27 @@ target/
 dbt_packages/
 logs/
 dbt_internal_packages/
+
+# Credentials - NEVER commit
+credentials/
+*.json
+!seeds/*.json
+
+# Data files - stored in BigQuery
+data/
+*.csv
+!seeds/*.csv
+
+# dbt
+target/
+dbt_packages/
+logs/
+
+# Python
+__pycache__/
+*.pyc
+.env
+venv/
+
+# Power BI
+*.pbix
